@@ -78,6 +78,28 @@ return {
       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
     end
 
+    -- new, no deprecation warning
+    local diagnostic_signs = {
+      { name = "DiagnosticSignError", text = " " },
+      { name = "DiagnosticSignWarn", text = " " },
+      { name = "DiagnosticSignHint", text = "󰠠 " },
+      { name = "DiagnosticSignInfo", text = " " },
+    }
+
+    vim.diagnostic.config({
+      -- define your signs here
+      signs = { values = diagnostic_signs },
+      virtual_text = true,
+      underline = true,
+      update_in_insert = false,
+    })
+    -- float diagnostics when cursor stays still
+    vim.o.updatetime = 250
+    vim.api.nvim_create_autocmd("CursorHold", {
+      callback = function()
+        vim.diagnostic.open_float(nil, { focusable = false })
+      end,
+    })
     mason_lspconfig.setup_handlers({
       -- default handler for installed servers
       function(server_name)
@@ -134,4 +156,3 @@ return {
     })
   end,
 }
-
